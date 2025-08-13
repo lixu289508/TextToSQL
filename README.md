@@ -1,5 +1,5 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">TextToSQL v1.0.0</h1>
-<h4 align="center">Natural language database query tool based on MCP protocol - access database information through conversation without writing SQL!</h4>
+<h4 align="center">Natural language SQL generation tool based on MCP protocol - generate various SQL statements through conversation, learn SQL or handle database operations!</h4>
 <p align="center">
 	<a href="https://github.com/lixu289508/TextToSQL/stargazers"><img src="https://img.shields.io/github/stars/lixu289508/TextToSQL?style=flat-square&logo=GitHub"></a>
 	<a href="https://github.com/lixu289508/TextToSQL/network/members"><img src="https://img.shields.io/github/forks/lixu289508/TextToSQL?style=flat-square&logo=GitHub"></a>
@@ -11,24 +11,40 @@
 
 ## Overview
 
-TextToSQL is an open-source tool that allows users to query databases using natural language. It leverages AI capabilities through the Model Context Protocol (MCP) to interpret user queries, generate appropriate SQL statements, and execute them against a database.
+TextToSQL is an open-source tool that allows users to generate various SQL statements using natural language. It leverages AI capabilities through the Model Context Protocol (MCP) to interpret user requirements and generate appropriate SQL statements. This tool can be used not only for database operations but also as an ideal assistant for learning SQL syntax.
+
+## Project Branches
+
+This project contains two main branches that provide different functionalities:
+
+1. **main branch**: Complete database query tool
+   - Generates SQL statements and executes queries
+   - Returns actual query results
+   - Suitable for scenarios requiring direct database information retrieval
+
+2. **sql_builder branch**: Pure SQL generation tool
+   - Only generates SQL statements without executing actual operations
+   - Supports all types of SQL operations (SELECT, INSERT, UPDATE, DELETE, CREATE, etc.)
+   - Ideal for SQL learning and teaching scenarios
+   - Suitable for scenarios where SQL needs to be generated but executed by other systems
 
 ## Features
 
-- **Natural Language Queries**: Query your database using plain English or Chinese
-- **SQL Generation**: Automatically converts natural language to optimized SQL queries
-- **Database Schema Caching**: Caches database structure for faster query generation
-- **Support for Complex Queries**: Handles JOINs, subqueries, aggregations, and more
-- **Interactive Query Refinement**: Engage in a conversation to refine your database queries
+- **Natural Language to SQL**: Use plain English or Chinese to describe requirements and automatically generate SQL statements
+- **Support for All SQL Operations**: Generate queries, inserts, updates, deletes, table creation, and more
+- **Database Schema Caching**: Cache database structure for faster SQL generation
+- **Support for Complex Statements**: Handle JOINs, subqueries, aggregations, transactions, and other advanced SQL features
+- **Interactive Refinement**: Engage in a conversation to refine generated SQL statements
+- **SQL Learning Tool**: Serve as an auxiliary tool for learning SQL syntax by viewing standard SQL formats for different operations
 
 ## Architecture
 
 The system consists of several components:
 
-1. **MCP Server**: Provides the interface between the AI model and the database tools
-2. **Database Connection**: Connects to your database (currently supports MySQL/MariaDB via PyMySQL)
+1. **MCP Server**: Provides the interface between the AI model and the SQL generation tools
+2. **Database Structure Retrieval**: Connects to your database to get table structure information (currently supports MySQL/MariaDB via PyMySQL)
 3. **Cache Management**: Tools to cache and update database schema information
-4. **Query Execution**: Tools to execute SQL queries and process results
+4. **SQL Generation**: Generates various SQL statements based on natural language requirements and database structure
 
 ## Installation
 
@@ -73,44 +89,37 @@ The system consists of several components:
    }
    ```
 
-3. Use natural language to query your database through the AI interface:
-   - Write code to use the AI interface to process queries
-   - You can reference the prompts in the `prompt.py` file to guide the model in generating SQL and executing queries
+3. Use natural language to generate SQL statements through the AI interface:
+   - Write code to use the AI interface to process requirements
+   - You can reference the prompts in the `prompt.py` file to guide the model in generating various SQL statements
 
-4. Query Result Processing:
-   The current approach saves query results to a fixed path JSON file while also returning the results in JSON format:
+4. SQL Generation Result Processing:
+   The tool generates SQL statements and returns them without executing actual operations:
    ```python
    # Result processing logic in tools/query_table_data.py
    
-   # Save to JSON file
-   json_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data.json')
-   os.makedirs(os.path.dirname(json_file_path), exist_ok=True)
-   with open(json_file_path, 'w', encoding='utf-8') as f:
-       json.dump(result_data, f, ensure_ascii=False, indent=4)
-   
-   # Also return JSON format data
+   # Return the generated SQL statement without executing operations
    return {
      "status": "success",
-     "message": f"Query successful, saved {len(rows)} records to JSON file",
-     "fields_count": len(field_names),
-     "records_count": len(rows),
-     "sql": sql,  # Return the executed SQL statement for debugging
-     "data": result_data  # Contains actual results
+     "message": f"SQL {operation_type} statement generated",
+     "sql": sql,
+     "operation_type": operation_type
    }
    ```
 
-### Example Queries
+### SQL Generation Examples
 
-- "Show me all employees in the IT department"
-- "What's the average salary by department?"
-- "Find customers who placed orders in the last 3 months"
-- "List the top 5 products by sales volume"
+- "Show me all employees in the IT department" → Generates SELECT query
+- "Create a new customer table with ID, name, phone, and address fields" → Generates CREATE TABLE statement
+- "Increase the salary of all employees in the sales department by 10%" → Generates UPDATE statement
+- "Delete expired order records" → Generates DELETE statement
+- "Add an email field to the customer table" → Generates ALTER TABLE statement
 
 ## Tools
 
 The system provides several tools through the MCP interface:
 
-- **get_table_data**: Execute SQL queries against the database
+- **get_table_data**: Generate various SQL statements (queries, inserts, updates, deletes, creates, etc.)
 - **get_cache_info**: Retrieve cached table and field information
 - **update_cache_info**: Update the cache with fresh database schema information
 

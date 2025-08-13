@@ -1,5 +1,5 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">TextToSQL v1.0.0</h1>
-<h4 align="center">基于MCP协议的自然语言数据库查询工具，直接用对话方式获取数据库信息，无需编写SQL！</h4>
+<h4 align="center">基于MCP协议的自然语言SQL生成工具，直接用对话方式生成各类SQL语句，学习SQL或处理数据库操作！</h4>
 <p align="center">
 	<a href="https://github.com/lixu289508/TextToSQL/stargazers"><img src="https://img.shields.io/github/stars/lixu289508/TextToSQL?style=flat-square&logo=GitHub"></a>
 	<a href="https://github.com/lixu289508/TextToSQL/network/members"><img src="https://img.shields.io/github/forks/lixu289508/TextToSQL?style=flat-square&logo=GitHub"></a>
@@ -11,24 +11,40 @@
 
 ## 概述
 
-TextToSQL是一个开源工具，允许用户使用自然语言查询数据库。它通过模型上下文协议(MCP)利用AI能力来解释用户查询，生成适当的SQL语句，并在数据库上执行它们。
+TextToSQL是一个开源工具，允许用户使用自然语言生成各类SQL语句。它通过模型上下文协议(MCP)利用AI能力来解释用户需求，生成适当的SQL语句。该工具不仅可用于数据库操作，还是学习SQL语法的理想助手。
+
+## 项目分支
+
+本项目包含两个主要分支，提供不同的功能：
+
+1. **main分支**：完整的数据库查询工具
+   - 生成SQL语句并执行查询
+   - 返回实际查询结果
+   - 适合需要直接获取数据库信息的场景
+
+2. **sql_builder分支**：纯SQL生成工具
+   - 仅生成SQL语句，不执行实际操作
+   - 支持所有类型的SQL操作（SELECT、INSERT、UPDATE、DELETE、CREATE等）
+   - 适合SQL学习和教学场景
+   - 适合需要生成SQL但由其他系统执行的场景
 
 ## 特性
 
-- **自然语言查询**：使用普通中文或英文查询您的数据库
-- **SQL生成**：自动将自然语言转换为优化的SQL查询
-- **数据库结构缓存**：缓存数据库结构以加快查询生成
-- **支持复杂查询**：处理JOIN、子查询、聚合等
-- **交互式查询优化**：通过对话方式优化您的数据库查询
+- **自然语言转SQL**：使用普通中文或英文描述需求，自动生成SQL语句
+- **支持全部SQL操作**：生成查询、插入、更新、删除、创建表等各类SQL语句
+- **数据库结构缓存**：缓存数据库结构以加快SQL生成
+- **支持复杂语句**：处理JOIN、子查询、聚合、事务等高级SQL功能
+- **交互式优化**：通过对话方式优化生成的SQL语句
+- **SQL学习工具**：作为学习SQL语法的辅助工具，查看不同操作的标准SQL写法
 
 ## 架构
 
 系统由以下几个组件组成：
 
-1. **MCP服务器**：提供AI模型和数据库工具之间的接口
-2. **数据库连接**：连接到您的数据库（目前通过PyMySQL支持MySQL/MariaDB）
+1. **MCP服务器**：提供AI模型和SQL生成工具之间的接口
+2. **数据库结构获取**：连接到您的数据库获取表结构信息（目前通过PyMySQL支持MySQL/MariaDB）
 3. **缓存管理**：用于缓存和更新数据库结构信息的工具
-4. **查询执行**：执行SQL查询并处理结果的工具
+4. **SQL生成**：根据自然语言需求和数据库结构生成各类SQL语句
 
 ## 安装
 
@@ -73,44 +89,37 @@ TextToSQL是一个开源工具，允许用户使用自然语言查询数据库�
    }
    ```
 
-3. 通过AI接口使用自然语言查询数据库：
+3. 通过AI接口使用自然语言生成SQL语句：
    - 编写代码，使用AI接口调用模型进行处理
-   - 可以参考`prompt.py`文件中的提示词来指导模型生成SQL并执行查询
+   - 可以参考`prompt.py`文件中的提示词来指导模型生成各类SQL语句
 
-4. 查询结果的处理方式：
-   当前的处理方式是将查询结果保存到固定路径的JSON文件中，同时返回JSON格式的结果：
+4. SQL生成结果的处理方式：
+   工具会生成SQL语句并返回，不执行实际操作：
    ```python
    # 在tools/query_table_data.py中的结果处理逻辑
    
-   # 保存到JSON文件
-   json_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data.json')
-   os.makedirs(os.path.dirname(json_file_path), exist_ok=True)
-   with open(json_file_path, 'w', encoding='utf-8') as f:
-       json.dump(result_data, f, ensure_ascii=False, indent=4)
-   
-   # 同时返回JSON格式数据
+   # 直接返回生成的SQL语句，不执行操作
    return {
      "status": "success",
-     "message": f"数据查询成功，已保存 {len(rows)} 条记录到JSON文件",
-     "fields_count": len(field_names),
-     "records_count": len(rows),
-     "sql": sql,  # 返回执行的SQL语句，便于调试
-     "data": result_data  # 包含实际结果
+     "message": f"SQL{operation_type}语句已生成",
+     "sql": sql,
+     "operation_type": operation_type
    }
    ```
 
-### 查询示例
+### SQL生成示例
 
-- "显示IT部门的所有员工"
-- "按部门统计平均薪资是多少？"
-- "查找过去3个月内下单的客户"
-- "列出销售量前5的产品"
+- "显示IT部门的所有员工" → 生成SELECT查询
+- "创建一个新的客户表，包含ID、姓名、电话和地址字段" → 生成CREATE TABLE语句
+- "将销售部所有员工的薪资上调10%" → 生成UPDATE语句
+- "删除过期的订单记录" → 生成DELETE语句
+- "为客户表添加邮箱字段" → 生成ALTER TABLE语句
 
 ## 工具
 
 系统通过MCP接口提供了几个工具：
 
-- **get_table_data**：在数据库上执行SQL查询
+- **get_table_data**：生成各类SQL语句（查询、插入、更新、删除、创建等）
 - **get_cache_info**：检索缓存的表和字段信息
 - **update_cache_info**：使用最新的数据库结构更新缓存
 
