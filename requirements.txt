@@ -1,0 +1,11 @@
+# MCP Server
+fastmcp>=0.1.0
+
+# Database Connection
+pymysql>=1.0.2
+
+# XML Processing (for cache)
+lxml>=4.9.2
+
+# Utility Libraries
+typing-extensions>=4.4.0
