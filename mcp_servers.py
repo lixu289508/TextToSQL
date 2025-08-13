@@ -22,7 +22,7 @@ def get_apollo_confs() -> dict:
 sql_config = get_apollo_confs()
 
 # 缓存文件路径 - 更新为与工具文件一致的路径
-CACHE_FILE_PATH = "./src/tools/space.xml"
+CACHE_FILE_PATH = "space.xml"
 
 
 def create_db_connection():
