@@ -13,6 +13,21 @@
 
 TextToSQL is an open-source tool that allows users to query databases using natural language. It leverages AI capabilities through the Model Context Protocol (MCP) to interpret user queries, generate appropriate SQL statements, and execute them against a database.
 
+## Project Branches
+
+This project offers two main branches to accommodate different use cases:
+
+- **main branch**: Complete database query tool
+  - Generates SQL statements and executes queries
+  - Returns actual query results
+  - Suitable for scenarios requiring direct database information retrieval
+
+- **sql_builder branch**: Pure SQL generation tool
+  - Only generates SQL statements without executing actual operations
+  - Supports all types of SQL operations (SELECT, INSERT, UPDATE, DELETE, CREATE, etc.)
+  - Ideal for SQL learning and teaching scenarios
+  - Suitable for scenarios where SQL needs to be generated but executed by other systems
+
 ## Features
 
 - **Natural Language Queries**: Query your database using plain English or Chinese
