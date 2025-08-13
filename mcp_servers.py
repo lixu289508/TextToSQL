@@ -41,21 +41,21 @@ def create_db_connection():
 		return None
 
 
-# 注册查询数据表数据工具
+# 注册SQL语句生成工具
 @mcp.tool()
 def get_table_data(table_name: str, fields: Optional[str] = None, limit: int = 10, where_clause: Optional[str] = None):
 	"""
-	查询数据表数据，打印结果但不返回具体数据。
-	支持复杂查询，包括连接查询、子查询等。
+	生成SQL语句并返回，不执行实际操作。
+	支持所有SQL操作，包括SELECT、INSERT、UPDATE、DELETE、CREATE、DROP等。
 
 	Args:
-		table_name (str): 表名称或完整SQL查询语句（如"employee"或"SELECT * FROM employee JOIN department ON..."）
-		fields (str, optional): 要查询的字段列表，多个字段用逗号分隔，如"id,name,salary"，为空则查询所有字段
-		limit (int, optional): 返回结果的最大行数，默认为10行
-		where_clause (str, optional): WHERE条件子句（不含WHERE关键字），如"department='IT' AND salary>5000"
+		table_name (str): 表名称或完整SQL语句（如"employee"或"SELECT * FROM employee JOIN department ON..."或"INSERT INTO employee..."）
+		fields (str, optional): 要查询的字段列表，多个字段用逗号分隔，如"id,name,salary"，为空则查询所有字段（仅用于简单查询）
+		limit (int, optional): 返回结果的最大行数，默认为10行（仅用于查询操作）
+		where_clause (str, optional): WHERE条件子句（不含WHERE关键字），如"department='IT' AND salary>5000"（仅用于简单操作）
 
 	Returns:
-		dict: 包含查询状态的字典，如{"status": "success", "message": "查询成功，结果已在服务器端打印", "rows_count": 5}
+		dict: 包含生成的SQL语句的字典，如{"status": "success", "message": "SQL查询语句已生成", "sql": "SELECT * FROM employee LIMIT 10"}
 	"""
 	db_connection = create_db_connection()
 	return query_table_data(db_connection, table_name, fields, limit, where_clause)
