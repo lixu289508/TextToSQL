@@ -96,7 +96,8 @@ def update_cache_info(table_comment: str = None):
 		     或{"status": "error", "message": "未找到匹配的表"}
 	"""
 	print(f"调用更新缓存信息工具，表描述: {table_comment}")
-	return tool_update_cache_info(table_comment, db_connection=create_db_connection(), sql_config=sql_config)
+	db_connection = create_db_connection()
+	return tool_update_cache_info(table_comment, db_connection=db_connection, sql_config=sql_config)
 
 
 if __name__ == "__main__":
